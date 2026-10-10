@@ -1,0 +1,25 @@
+From 5ef099e51b35d1df8f8276086a81a0e5c7fe37b7 Mon Sep 17 00:00:00 2001
+From: aartoni <alessio@artoni.org>
+Date: Fri, 9 Oct 2026 22:34:27 +0200
+Subject: [PATCH] minilarbs-block-button
+
+---
+ dwmblocks.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/dwmblocks.c b/dwmblocks.c
+index 2ec7ee4..0ebbd60 100644
+--- a/dwmblocks.c
++++ b/dwmblocks.c
+@@ -201,7 +201,7 @@ void sighandler(int signum, siginfo_t *si, void *ucontext)
+ 			sprintf(shcmd, "%s; kill -%d %d", blocks[i].command, SIGRTMIN+blocks[i].signal, parent);
+ 			char *cmd[] = { "/bin/sh", "-c", shcmd, NULL };
+ 			char button[2] = { '0' + si->si_value.sival_int, '\0' };
+-			setenv("BUTTON", button, 1);
++			setenv("BLOCK_BUTTON", button, 1);
+ 			setsid();
+ 			execvp(cmd[0], cmd);
+ 			perror(cmd[0]);
+-- 
+2.56.0
+

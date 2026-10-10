@@ -1,0 +1,41 @@
+From 257b93be1de6804d542a33979600b6d187dd617b Mon Sep 17 00:00:00 2001
+From: aartoni <alessio@artoni.org>
+Date: Fri, 9 Oct 2026 22:37:01 +0200
+Subject: [PATCH] minilarbs-defer-signals
+
+---
+ dwmblocks.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/dwmblocks.c b/dwmblocks.c
+index c30e407..92097b7 100644
+--- a/dwmblocks.c
++++ b/dwmblocks.c
+@@ -166,6 +166,12 @@ void pstdout()
+ 
+ void statusloop()
+ {
++	/* run handlers only while sleeping, never inside popen() or Xlib */
++	sigset_t rtsigs;
++	sigemptyset(&rtsigs);
++	for (int s = SIGRTMIN; s <= SIGRTMAX; s++)
++		sigaddset(&rtsigs, s);
++	sigprocmask(SIG_BLOCK, &rtsigs, NULL);
+ 	setupsignals();
+ 	int i = 0;
+ 	getcmds(-1);
+@@ -174,9 +180,11 @@ void statusloop()
+ 		writestatus();
+ 		if (!statusContinue)
+ 			break;
++		sigprocmask(SIG_UNBLOCK, &rtsigs, NULL);
+ 		struct timespec ts = { .tv_sec = 1 };
+ 		while (nanosleep(&ts, &ts) == -1 && statusContinue)
+ 			;
++		sigprocmask(SIG_BLOCK, &rtsigs, NULL);
+ 	}
+ }
+ 
+-- 
+2.56.0
+
