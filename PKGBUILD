@@ -33,7 +33,9 @@ prepare() {
     patch -Np1 -i "$srcdir/${p##*/}"
   done
   cp "$srcdir/blocks.h" .
-  printf '%s\n' 'CFLAGS += -std=gnu99 $(PKG_CPPFLAGS) $(PKG_CFLAGS)' 'LDFLAGS += $(PKG_LDFLAGS)' >> Makefile
+  printf '%s\n' \
+    'CFLAGS += -std=gnu99 $(PKG_CPPFLAGS) $(PKG_CFLAGS)' \
+    'LDFLAGS := $(PKG_LDFLAGS) $(LDFLAGS)' >> Makefile
 }
 
 build() {
